@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 typedef struct record
 {
     int Id;
@@ -25,22 +26,189 @@ typedef struct record
 //     fclose(file);
 //     return num;
 // }
+
+int asciicodeTOnumber(int num)
+{
+    switch (num)
+    {
+    case 48:
+        return 0;
+        break;
+    case 49:
+        return 1;
+        break;
+    case 50:
+        return 2;
+        break;
+    case 51:
+        return 3;
+        break;
+    case 52:
+        return 4;
+        break;
+    case 53:
+        return 5;
+        break;
+    case 54:
+        return 6;
+        break;
+    case 55:
+        return 7;
+        break;
+    case 56:
+        return 8;
+        break;
+    case 57:
+        return 9;
+        break;
+
+    default:
+        return -1;
+        break;
+    }
+}
+bool testIfstring(char test[])
+{
+    bool res = true;
+    for (int i = 0; i < strlen(test); i++)
+    {
+        if (res == false)
+        {
+            break;
+        }
+
+        int asciicode = (int)test[i];
+        if ((asciicode >= 97 && asciicode <= 122) || (asciicode >= 65 && asciicode <= 90) || asciicode == 95 || asciicode == 45)
+        {
+            res = true;
+        }
+        else
+        {
+            res = false;
+        }
+    }
+    return res;
+}
+bool testIftime(char test[]){
+    bool res;
+    int first2,last2;
+    if (asciicodeTOnumber(test[0]) == -1 || asciicodeTOnumber(test[1]) == -1)
+    {
+        return false;
+    }
+    else
+    {
+        first2 = asciicodeTOnumber(test[0]);
+        first2 *=10;
+        first2 +=asciicodeTOnumber(test[1]);
+    }
+    
+    if (first2 >= 00 && first2 <=23)
+    {
+        res = true;
+    }
+    else
+    {
+        return false;
+    }
+    if (test[2] == ':')
+    {
+        res = true;
+    }
+    else
+    {
+        return false;
+    }
+        if (asciicodeTOnumber(test[3]) == -1 || asciicodeTOnumber(test[4]) == -1)
+    {
+        return false;
+    }
+    else
+    {
+        first2 = asciicodeTOnumber(test[3]);
+        first2 *=10;
+        first2 +=asciicodeTOnumber(test[4]);
+    }
+    
+    if (first2 >= 00 && first2 <=59)
+    {
+        res = true;
+    }
+    else
+    {
+        return false;
+    }
+    return res;
+}
 void AddFlight(record flight, FILE *file)
 {
+    char copyid[10];
     file = fopen("flightList", "a");
     printf("+----------------------------------------------------------+\n");
     printf("                       Ajouter un flight                    \n");
     printf("+----------------------------------------------------------+\n");
     printf("\n> flight Id: ");
-    scanf("%d", &flight.Id);
+jump:
+    scanf("%s",copyid);
+    for (int i = 0; i < strlen(copyid); i++)
+    {
+        if (asciicodeTOnumber((int)copyid[i]) == -1)
+        {
+            printf("your input contain a non number value please try again:\n");
+            goto jump;
+        }
+        else
+        {
+            if (i == 0)
+            {
+                flight.Id = asciicodeTOnumber((int)copyid[0]);
+            }
+            else
+            {
+                flight.Id *= 10;
+                flight.Id += asciicodeTOnumber((int)copyid[i]);
+            }
+        }
+    }
     printf("\n> la ville de depart: ");
+jump2:
     scanf("%s", flight.TakeOffCity);
+    if (testIfstring(flight.TakeOffCity) == false)
+    {
+        printf("this input is invald\n");
+        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe\n");
+        goto jump2;
+    }
     printf("\n> la ville de d'arrivee: ");
+jump3:
     scanf("%s", flight.ArriveCity);
+    if (testIfstring(flight.ArriveCity) == false)
+    {
+        printf("this input is invald\n");
+        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe\n");
+        goto jump3;
+    }
+    
     printf("\n> l'heure de depart (hh:mm): ");
+jump4:
     scanf("%s", flight.TakeOffTime);
+    if (testIftime(flight.TakeOffTime) == false)
+    {
+        printf("this time input is invald\n");
+        printf("time input should be as following hh:mm\n");
+        goto jump4;
+    }
+    
     printf("\n> l'heure d'arrivee (hh:mm): ");
+jump5:
     scanf("%s", flight.ArriveTime);
+    if (testIftime(flight.ArriveTime) == false)
+    {
+        printf("this time input is invald\n");
+        printf("time input should be as following hh:mm\n");
+        goto jump5;
+    }
+    
     fprintf(file, "%3d %20s %20s %6s %6s \n", flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime);
     printf("+------------------------------------------------------------+\n");
     fclose(file);
@@ -258,3 +426,4 @@ int main(int argc, char const *argv[])
     //id = 3 
     //take off and arrive place = 20
     //the time = 5
+
