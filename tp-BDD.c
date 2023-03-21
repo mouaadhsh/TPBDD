@@ -10,22 +10,6 @@ typedef struct record
     char TakeOffTime[20];
     char ArriveTime[20];
 } record;
-// int getId(FILE *file)
-// {
-//     char line[4];
-//     file = fopen("record", "r");
-//     if (file == NULL)
-//     {
-//         return 0;
-//     }
-//     fseek(file, 0, SEEK_END);
-//     fseek(file, -60, SEEK_CUR);
-//     fgets(line, sizeof(line), file);
-//     int num;
-//     num = strtol(line, NULL, 10);
-//     fclose(file);
-//     return num;
-// }
 
 int asciicodeTOnumber(int num)
 {
@@ -89,9 +73,10 @@ bool testIfstring(char test[])
     }
     return res;
 }
-bool testIftime(char test[]){
+bool testIftime(char test[])
+{
     bool res;
-    int first2,last2;
+    int first2, last2;
     if (asciicodeTOnumber(test[0]) == -1 || asciicodeTOnumber(test[1]) == -1)
     {
         return false;
@@ -99,11 +84,11 @@ bool testIftime(char test[]){
     else
     {
         first2 = asciicodeTOnumber(test[0]);
-        first2 *=10;
-        first2 +=asciicodeTOnumber(test[1]);
+        first2 *= 10;
+        first2 += asciicodeTOnumber(test[1]);
     }
-    
-    if (first2 >= 00 && first2 <=23)
+
+    if (first2 >= 00 && first2 <= 23)
     {
         res = true;
     }
@@ -119,18 +104,18 @@ bool testIftime(char test[]){
     {
         return false;
     }
-        if (asciicodeTOnumber(test[3]) == -1 || asciicodeTOnumber(test[4]) == -1)
+    if (asciicodeTOnumber(test[3]) == -1 || asciicodeTOnumber(test[4]) == -1)
     {
         return false;
     }
     else
     {
         first2 = asciicodeTOnumber(test[3]);
-        first2 *=10;
-        first2 +=asciicodeTOnumber(test[4]);
+        first2 *= 10;
+        first2 += asciicodeTOnumber(test[4]);
     }
-    
-    if (first2 >= 00 && first2 <=59)
+
+    if (first2 >= 00 && first2 <= 59)
     {
         res = true;
     }
@@ -147,14 +132,20 @@ void AddFlight(record flight, FILE *file)
     printf("+----------------------------------------------------------+\n");
     printf("                       Ajouter un flight                    \n");
     printf("+----------------------------------------------------------+\n");
-    printf("\n> flight Id: ");
 jump:
-    scanf("%s",copyid);
+    printf("\n> flight Id: ");
+    scanf("%s", copyid);
+    if (strlen(copyid) > 3)
+    {
+        printf(">> \x1b[31myour input contain more than 3 digits try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump;
+    }
+
     for (int i = 0; i < strlen(copyid); i++)
     {
         if (asciicodeTOnumber((int)copyid[i]) == -1)
         {
-            printf("your input contain a non number value please try again:\n");
+            printf(">> \x1b[31myour input contain a non number value please try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
             goto jump;
         }
         else
@@ -170,46 +161,59 @@ jump:
             }
         }
     }
-    printf("\n> la ville de depart: ");
 jump2:
+    printf("\n> la ville de depart: ");
     scanf("%s", flight.TakeOffCity);
     if (testIfstring(flight.TakeOffCity) == false)
     {
-        printf("this input is invald\n");
-        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe\n");
+        printf(">> \x1b[31mthis input is invald!, ");
+        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe.\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump2;
     }
-    printf("\n> la ville de d'arrivee: ");
+    else if (strlen(flight.TakeOffCity) > 20)
+    {
+        printf(">> \x1b[31myour input contain more than 20 charecters try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump2;
+    }
+
 jump3:
+    printf("\n> la ville de d'arrivee: ");
     scanf("%s", flight.ArriveCity);
     if (testIfstring(flight.ArriveCity) == false)
     {
-        printf("this input is invald\n");
-        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe\n");
+        printf(">> \x1b[31mthis input is invald!, ");
+        printf("the input can only contain regular alphabets case/lower case or undercore or a hyphe.\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump3;
     }
-    
-    printf("\n> l'heure de depart (hh:mm): ");
-jump4:
-    scanf("%s", flight.TakeOffTime);
-    if (testIftime(flight.TakeOffTime) == false)
+    else if (strlen(flight.ArriveCity) > 20)
     {
-        printf("this time input is invald\n");
-        printf("time input should be as following hh:mm\n");
+        printf(">> \x1b[31myour input contain more than 20 charecters try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump3;
+    }
+
+jump4:
+    printf("\n> l'heure de depart (hh:mm): ");
+    scanf("%s", flight.TakeOffTime);
+    if (testIftime(flight.TakeOffTime) == false || strlen(flight.TakeOffTime) > 5)
+    {
+        printf(">> \x1b[31mthis input is invald!, ");
+        printf("time input should be as following hh:mm.\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump4;
     }
-    
-    printf("\n> l'heure d'arrivee (hh:mm): ");
+
 jump5:
+    printf("\n> l'heure d'arrivee (hh:mm): ");
     scanf("%s", flight.ArriveTime);
-    if (testIftime(flight.ArriveTime) == false)
+    if (testIftime(flight.ArriveTime) == false || strlen(flight.ArriveTime) > 5)
     {
-        printf("this time input is invald\n");
-        printf("time input should be as following hh:mm\n");
+        printf(">> \x1b[31mthis input is invald!, ");
+        printf("time input should be as following hh:mm.\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump5;
     }
-    
+
     fprintf(file, "%3d %20s %20s %6s %6s \n", flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime);
+    printf("+------------------------------------------------------------+\n");
+    printf("\x1b[32m Flight included succesfully.\x1b[0m ");
     printf("+------------------------------------------------------------+\n");
     fclose(file);
 }
@@ -218,7 +222,6 @@ void DisplayAllFlights(FILE *file)
 {
     file = fopen("flightList", "r");
     record flight;
-    // char line[100];
     if (file == NULL)
     {
         printf("ther's an error");
@@ -342,11 +345,13 @@ void displayBeforeAndAfterD(FILE *tmp, FILE *file, int id)
     }
     else if (noChanges)
     {
-        printf("+------------------------------------------------------------+\x1b[33mther's no changes\x1b[0m+----------------------------------------------------------+\n");
+        printf("+--------------------------------------------------------------+\x1b[33mno changes\x1b[0m+---------------------------------------------------------------+\n");
+        printf(">>\x1b[31m There's no flight with the entered ID\n\x1b[0m");
     }
+
     else
     {
-        printf("+--------------------------------------------------------------+\x1b[33mther's changes\x1b[0m+-----------------------------------------------------------+\n");
+        printf("+----------------------------------------------------------------+\x1b[33mdeleted\x1b[0m+----------------------------------------------------------------+\n");
     }
     fclose(file);
     fclose(tmp);
@@ -360,12 +365,13 @@ void DeleteFlight(FILE *file)
         exit(1);
     }
 
-    FILE *tmp = fopen("tmp.txt", "w");
+    FILE *tmp = fopen("tmp", "w");
     if (tmp == NULL)
     {
         printf("there's an Error !!");
         exit(1);
     }
+
     char line[100];
     int IdToDelet;
     DisplayAllFlights(file);
@@ -383,8 +389,9 @@ void DeleteFlight(FILE *file)
     }
     fclose(file);
     fclose(tmp);
+    displayBeforeAndAfterD(tmp, file, IdToDelet);
     remove("flightList");
-    rename("tmp.txt", "flightList");
+    rename("tmp", "flightList");
 }
 void selection_sort(record arr[], int n)
 {
@@ -403,48 +410,7 @@ void selection_sort(record arr[], int n)
         arr[min_idx] = temp;
     }
 }
-void displayBeforeAndAfter(FILE *tmp, FILE *file)
-{
-    file = fopen("flightList", "r");
-    record before;
-    record after;
-    char line[100];
-    if (file == NULL)
-    {
-        printf("ther's an error");
-        exit(1);
-    }
-    tmp = fopen("tmp", "r");
-    if (tmp == NULL)
-    {
-        printf("there's an Error !!");
-        exit(1);
-    }
-    int i = 1;
-    printf("+-----------------------------------------------------------------+     +-----------------------------------------------------------------+\n");
-    printf("|                  Display flight (Before):                       | ==> |                  Display flight (After):                        |\n");
-    printf("+-----------------------------------------------------------------+     +-----------------------------------------------------------------+\n");
-    printf("|Nbr|ID |    Take off city   |    Arrive city     | Ttime | Atime |     |Nbr|ID |    Take off city   |    Arrive city     | Ttime | Atime |\n");
-    printf("+-----------------------------------------------------------------+     +-----------------------------------------------------------------+\n");
-    while (fscanf(file, "%3d %20s %20s %6s %6s", &before.Id, before.TakeOffCity, before.ArriveCity, before.TakeOffTime, before.ArriveTime) != EOF && fscanf(tmp, "%3d %20s %20s %6s %6s", &after.Id, after.TakeOffCity, after.ArriveCity, after.TakeOffTime, after.ArriveTime) != EOF)
-    {
-        if (before.Id != after.Id)
-        {
-            printf("\x1b[31m|%3d|%3d|%20s|%20s|%7s|%7s| ==> \x1b[0m", i, before.Id, before.TakeOffCity, before.ArriveCity, before.TakeOffTime, before.ArriveTime);
-            printf("\x1b[32m|%3d|%3d|%20s|%20s|%7s|%7s|\x1b[0m\n", i, after.Id, after.TakeOffCity, after.ArriveCity, after.TakeOffTime, after.ArriveTime);
-        }
-        else
-        {
-            printf("|%3d|%3d|%20s|%20s|%7s|%7s|     ", i, before.Id, before.TakeOffCity, before.ArriveCity, before.TakeOffTime, before.ArriveTime);
-            //printf("|%3d|%3d|%20s|%20s|%7s|%7s|     ", i, before.Id, before.TakeOffCity, before.ArriveCity, before.TakeOffTime, before.ArriveTime);
-            printf("|%3d|%3d|%20s|%20s|%7s|%7s|\n", i, after.Id, after.TakeOffCity, after.ArriveCity, after.TakeOffTime, after.ArriveTime);
-        }
-        i++;
-    }
-    printf("+-----------------------------------------------------------------+     +-----------------------------------------------------------------+\n");
-    fclose(file);
-    fclose(tmp);
-}
+
 void SortFlight(FILE *file)
 {
     file = fopen("flightList", "r");
@@ -473,7 +439,7 @@ void SortFlight(FILE *file)
     }
     fclose(file);
     fclose(tmp);
-    displayBeforeAndAfter(tmp, file);
+    displayBeforeAndAfterS(tmp, file);
     remove("flightList");
     rename("tmp", "flightList");
 }
@@ -500,21 +466,31 @@ int main(int argc, char const *argv[])
         case 1: // add a fly
             system("cls");
             AddFlight(flight, FlighList);
+            printf("> presse [Enter] to continue: ");
+            fflush(stdin);
+            getc(stdin);
             break;
         case 2: // display all the list
             system("cls");
             char any;
             DisplayAllFlights(FlighList);
-            printf("> presse [any key + Enter] to continue: ");
-            scanf(" %c", &any);
+            printf("> presse [Enter] to continue: ");
+            fflush(stdin);
+            getc(stdin);
             break;
         case 3: // delete fly
             system("cls");
             DeleteFlight(FlighList);
+            printf("> presse [Enter] to continue: ");
+            fflush(stdin);
+            getc(stdin);
             break;
         case 4: // sort fly
             system("cls");
             SortFlight(FlighList);
+            printf("> presse [Enter] to continue: ");
+            fflush(stdin);
+            getc(stdin);
             break;
         case 0:
             system("cls");
@@ -524,18 +500,9 @@ int main(int argc, char const *argv[])
             printf("Unvalide choice\n");
             break;
         }
-        // system("cls");
+        system("cls");
 
     } while (1);
 
     return 0;
 }
-// toDo: adding the before after display in the sorting function.
-// toDo: adding controls to the inputs in the add function.
-// date control
-// repeted Id
-// two flights with the same parameters (the same : take off palce and the same time of take off)
-//add a control to verify the lenght of the input before adding it to the file to avide any mistakes
-    //id = 3 
-    //take off and arrive place = 20
-    //the time = 5
