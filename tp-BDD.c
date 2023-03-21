@@ -218,7 +218,7 @@ jump5:
     fclose(file);
 }
 
-void DisplayAllFlights(FILE *file)
+int DisplayAllFlights(FILE *file)
 {
     file = fopen("flightList", "r");
     record flight;
@@ -238,8 +238,20 @@ void DisplayAllFlights(FILE *file)
         printf("|%3d|%3d|%20s|%20s|%7s|%7s|\n", i, flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime);
         i++;
     }
+    if (i == 1)
+    {
+        printf("|                           \x1b[36mThere's no fly\x1b[0m                        |\n");
+    }
     printf("+-----------------------------------------------------------------+\n");
     fclose(file);
+    if (i == 1)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 void displayBeforeAndAfterS(FILE *tmp, FILE *file)
 {
@@ -365,16 +377,22 @@ void DeleteFlight(FILE *file)
         exit(1);
     }
 
+    char line[100];
+    int IdToDelet;
+    if (DisplayAllFlights(file))
+    {
+        printf("\x1b[31m >> there's no flight to delete\n \x1b[0m");
+        fclose(file);
+        goto quit;
+    }
+
     FILE *tmp = fopen("tmp", "w");
+
     if (tmp == NULL)
     {
         printf("there's an Error !!");
         exit(1);
     }
-
-    char line[100];
-    int IdToDelet;
-    DisplayAllFlights(file);
     printf("> Enter the Id to delete the flight: ");
     scanf("%d", &IdToDelet);
     char Id[4];
@@ -387,11 +405,12 @@ void DeleteFlight(FILE *file)
             fputs(line, tmp);
         }
     }
-    fclose(file);
     fclose(tmp);
+    fclose(file);
     displayBeforeAndAfterD(tmp, file, IdToDelet);
     remove("flightList");
     rename("tmp", "flightList");
+quit:
 }
 void selection_sort(record arr[], int n)
 {

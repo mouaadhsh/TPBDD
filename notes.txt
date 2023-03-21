@@ -13,4 +13,5 @@ controle condition (done):
 - add the message to notify the user when he/she want to delete an non existing id.
 - adding controls to the inputs in the add function.
 - adding the before after display in the sorting function.
+- adding file empty option to delete. 
 ------------------------------------------------------------------------------------------------------------------
