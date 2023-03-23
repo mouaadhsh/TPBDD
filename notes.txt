@@ -1,5 +1,4 @@
 control condition : 
-    - the takeoff city shouldn't be the same  arrive city
     - two flights with the same parameters (the same : take off palce and the same time of take off).
 - translate all the text in the programme to english.
 ------------------------------------------------------- done -----------------------------------------------------
@@ -14,4 +13,5 @@ controle condition (done):
 - adding file empty option to delete. 
 - repeted Id.
 - the arrive time have to be after the takeoff time 
+- the takeoff city shouldn't be the same  arrive city
 ------------------------------------------------------------------------------------------------------------------

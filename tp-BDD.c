@@ -210,6 +210,13 @@ jump3:
         printf(">> \x1b[31myour input contain more than 20 charecters try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump3;
     }
+    printf("arrive city : %s\n",flight.ArriveCity);
+    printf("take off city : %s\n", flight.TakeOffCity);
+    if (strcmp(flight.ArriveCity ,flight.TakeOffCity) == 0){
+        printf(">> \x1b[31mThe Arrive time is the same as the take off city:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump3;
+    }
+
 
 jump4:
     printf("\n> l'heure de depart (hh:mm): ");
