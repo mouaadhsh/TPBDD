@@ -230,10 +230,15 @@ jump5:
         printf("time input should be as following hh:mm.\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump5;
     }
-
+    else if (strcmp(flight.ArriveTime,flight.TakeOffTime) < 0)
+    {
+        printf(">> \x1b[31mthis input is invald!, ");
+        printf("Arrive time can't be after the take off time. \x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump5;
+    }
     file = fopen("flightList", "a");
     fprintf(file, "%3d %20s %20s %6s %6s \n", flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime);
-    printf("+------------------------------------------------------------+\n");
+    printf("+------------------------------------------------------------+");
     printf("\x1b[32m Flight included succesfully.\x1b[0m ");
     printf("+------------------------------------------------------------+\n");
     fclose(file);
