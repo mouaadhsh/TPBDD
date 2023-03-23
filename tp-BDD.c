@@ -125,10 +125,25 @@ bool testIftime(char test[])
     }
     return res;
 }
+bool RepeatedID(FILE *file, int ID)
+{
+    file = fopen("flightList", "r");
+    record flight;
+    while (fscanf(file, "%3d %20s %20s %6s %6s", &flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime) != EOF)
+    {
+        if (ID == flight.Id)
+        {
+            fclose(file);
+            return true;
+        }
+    }
+    fclose(file);
+    
+    return false;
+}
 void AddFlight(record flight, FILE *file)
 {
     char copyid[10];
-    file = fopen("flightList", "a");
     printf("+----------------------------------------------------------+\n");
     printf("                       Ajouter un flight                    \n");
     printf("+----------------------------------------------------------+\n");
@@ -138,6 +153,11 @@ jump:
     if (strlen(copyid) > 3)
     {
         printf(">> \x1b[31myour input contain more than 3 digits try again:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
+        goto jump;
+    }
+    else if (RepeatedID(file,atoi(copyid)))
+    {
+        printf(">> \x1b[31mThe ID should be unique [your enterd ID is already exist]:\x1b[0m\n>> \x1b[33mRe-enter:\x1b[0m");
         goto jump;
     }
 
@@ -211,6 +231,7 @@ jump5:
         goto jump5;
     }
 
+    file = fopen("flightList", "a");
     fprintf(file, "%3d %20s %20s %6s %6s \n", flight.Id, flight.TakeOffCity, flight.ArriveCity, flight.TakeOffTime, flight.ArriveTime);
     printf("+------------------------------------------------------------+\n");
     printf("\x1b[32m Flight included succesfully.\x1b[0m ");
