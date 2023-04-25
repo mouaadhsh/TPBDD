@@ -1,6 +1,4 @@
-control condition : 
-    - two flights with the same parameters (the same : take off palce and the same time of take off).
-- translate all the text in the programme to english.
+-Raport 
 ------------------------------------------------------- done -----------------------------------------------------
 controle condition (done):
     - add a control to verify the lenght of the input before adding it to the file to avide any mistakes. 
@@ -14,4 +12,10 @@ controle condition (done):
 - repeted Id.
 - the arrive time have to be after the takeoff time 
 - the takeoff city shouldn't be the same  arrive city
+- translate all the text in the programme to english.
+
+-Replacing all function with pre-build functions:
+    - isString function
+    - asciicodeTOnumber function by converter function from string to int 
+    - adding IdGenerator to genearate rondom Id of 3 digit.
 ------------------------------------------------------------------------------------------------------------------
